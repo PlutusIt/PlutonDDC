@@ -10,7 +10,7 @@ contract PlutonSale {
     }
     
     // Logs a new contribution to the sale
-    event FundTransfer(address indexed contributor, uint indexed amount, bool isContribution);
+    event FundTransfer(address indexed contributor, uint indexed amount, bool);
     
     // If Ether is sent to the contract after the end of the sale, it is refused
     modifier afterDeadline() { if (now >= deadline) _ }
