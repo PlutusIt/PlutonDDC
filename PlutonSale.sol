@@ -34,7 +34,7 @@ contract PlutonSale {
     event EndSale(address plutusBoard, uint amountRaised);
     
     // Sends sale proceeds to the plutusMultiSig contract address at the end of the sale
-    function sendToPlutusMultiSig(address _plutusBoard) beforeDeadline private returns(bool) {
+    function sendToPlutusBoard(address _plutusBoard) beforeDeadline private returns(bool) {
         EndSale(plutusBoard, amountRaised);
         plutusBoard = _plutusBoard;
         _plutusBoard.send(this.balance);
