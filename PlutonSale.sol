@@ -1,42 +1,69 @@
 contract PlutonSale {
-    address public plutusBoard;
+
+	address public plutusBoard;
+	uint public endTime;
+	uint public startTime = now;
     uint public amountRaised;
-    uint public deadline;
+    uint public bonus;
+    User[] public users;
+   
+    // Logs a new contribution to the sale
+    event Contribution(address indexed contributor, uint indexed amount, uint indexed bonus);
+
+    // Data structure containing information on every contribution
+    struct User {
+        address contributor;
+        uint amount;
+        uint bonusPercent;
+    }
     
     // Initializes the contract at the sale's start
-    function PlutonSale(address _plutusBoard, uint _duration) {
-        plutusBoard = _plutusBoard;
-        deadline = now + _duration * 1 minutes;
+    // duration is in seconds
+    function PlutonSale(address owner, uint duration) {
+    	plutusBoard = owner;
+        endTime = startTime + duration;
+    }
+
+
+    modifier afterDeadline() { 
+    	if (now > endTime) throw;
+    		_ 
     }
     
-    // Logs a new contribution to the sale
-    event FundTransfer(address indexed contributor, uint indexed amount, bool);
-    
-    // If Ether is sent to the contract after the end of the sale, it is refused
-    modifier afterDeadline() { if (now >= deadline) _ }
-    
-    // This is the default function called when Ether is sent to the contract's address
-    function () afterDeadline {
-        uint amount = msg.value;
+    // This is the default function called when Ether is sent to the contract
+    function () afterDeadline returns (bool success) {
+    	uint bonusPeriod = 86400;
+    	uint dayOne = startTime + bonusPeriod;
+    	uint dayTwo = dayOne + bonusPeriod;
+    	uint dayThree = dayTwo + bonusPeriod;
+        if (now <= dayOne) {
+            bonus = 3;
+        } else if (now <= dayTwo) {
+            bonus = 2;
+        } else if (now <= dayThree) {
+            bonus = 1;
+        } else 
+        	bonus = 0;
+
+    	uint amount = msg.value;
+        users[users.length++] = User({contributor: tx.origin, amount: amount, bonusPercent: bonus});
         amountRaised += amount;
-        FundTransfer(msg.sender, amount, true);
+        Contribution(tx.origin, amount, amountRaised);
+    }
+
+
+    modifier onlyPlutus() {
+    	if (msg.sender != plutusBoard) throw;
+    		_
+    }
+
+    modifier beforeEndSale() { 
+    	if (now <= endTime) throw; 
+    		_
     }
     
-    // Returns the amount of Ether raised so far
-    function getFundsRaised() returns (uint amountRaised) {
-        amountRaised = this.balance;
-    }
-    
-    // modifier to prevent sending funds to address plutusBoard before the sale end
-    modifier beforeDeadline() { if (now < deadline) _ }
-    
-    // Logs the final amount of ETH raised and the MultiSig address the funds are sent to
-    event EndSale(address plutusBoard, uint amountRaised);
-    
-    // Sends sale proceeds to the plutusMultiSig contract address at the end of the sale
-    function sendToPlutusBoard(address _plutusBoard) beforeDeadline private returns(bool) {
-        EndSale(plutusBoard, amountRaised);
-        plutusBoard = _plutusBoard;
-        _plutusBoard.send(this.balance);
+    // Sends sale proceeds to Plutus Board at the end of the sale
+    function sendEthToPlutusBoard() onlyPlutus beforeEndSale {
+        plutusBoard.send(this.balance);
     }
 }
