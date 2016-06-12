@@ -56,18 +56,30 @@ contract PlutonSale {
         Contribution(tx.origin, amount, amountRaised);
     }
 
-    modifier onlyPlutus() {
-    	if (msg.sender != plutusBoard) throw;
-    		_
-    }
-
-    modifier beforeEndSale() { 
+    modifier beforeDeadline() { 
     	if (now <= endTime) throw; 
     		_
     }
+
+    function saleProceeds() beforeDeadline returns (uint amountRaised) {
+        return amountRaised;
+    }
+
+    function distributePLU(uint amountBTC, uint avgPriceBTC, ui)
+
+   /* 
+    function convertETHToPlU(uint conversionRate)  beforeDeadline returns (uint convertedAmount) {
+
+        return saleProceeds() * conversionRate;
+    }*/
+
+    modifier onlyPlutus() {
+        if (msg.sender != plutusBoard) throw;
+            _
+    }
     
     // Sends sale proceeds to Plutus Board at the end of the sale
-    function sendEthToPlutusBoard() onlyPlutus beforeEndSale {
+    function sendEthToPlutusBoard() onlyPlutus beforeDeadline {
         plutusBoard.send(this.balance);
     }
 }
