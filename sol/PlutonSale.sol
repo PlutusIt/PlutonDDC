@@ -65,14 +65,6 @@ contract PlutonSale {
         return amountRaised;
     }
 
-    function distributePLU(uint amountBTC, uint avgPriceBTC, ui)
-
-   /* 
-    function convertETHToPlU(uint conversionRate)  beforeDeadline returns (uint convertedAmount) {
-
-        return saleProceeds() * conversionRate;
-    }*/
-
     modifier onlyPlutus() {
         if (msg.sender != plutusBoard) throw;
             _
