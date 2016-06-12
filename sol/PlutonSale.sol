@@ -17,22 +17,21 @@ contract PlutonSale {
         uint bonusPercent;
     }
     
-    // Initializes the contract at the sale's start
-    // duration is in seconds
+    // Initializes the contract at the sale's start.
+    // Param duration is in seconds
     function PlutonSale(address owner, uint duration) {
     	plutusBoard = owner;
         endTime = startTime + duration;
     }
-
 
     modifier beforeDeadline() { 
     	if (now > endTime) throw;
     		_ 
     }
     
-    // This is the default function called when Ether is sent to the contract
-    function () beforeDeadline returns (bool success) {
-    	uint bonusPeriod = 86400;
+    // Determines if you get a bonus of 1%, 2%, 3%, or 0%
+    function bonusPercent() beforeDeadline returns (uint bonus) {
+        uint bonusPeriod = 86400;
         uint dayOne = startTime + bonusPeriod;
         uint dayTwo = dayOne + bonusPeriod;
         uint dayThree = dayTwo + bonusPeriod;
@@ -45,12 +44,20 @@ contract PlutonSale {
         } else 
             bonus = 0;
 
+        return bonus;
+    }
+
+    // This is the default function called when Ether
+    // is sent to this contract address.
+    function () beforeDeadline returns (bool success) {
+    	bonusPercent();
     	uint amount = msg.value;
         users[users.length++] = User({contributor: tx.origin, amount: amount, bonusPercent: bonus});
         amountRaised += amount;
         contributionCall();
     }
 
+    // logs each transaction for the frontend UI to display
     function contributionCall() {
         uint amount;
         Contribution(tx.origin, amount, amountRaised);
@@ -61,6 +68,7 @@ contract PlutonSale {
     		_
     }
 
+    // Returns the total amount raised after the sale
     function saleProceeds() afterDeadline returns (uint amountRaised) {
         return amountRaised;
     }
