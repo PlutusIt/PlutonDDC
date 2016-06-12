@@ -29,6 +29,7 @@ contract PlutonSale {
     		_ 
     }
 
+    // Returns the amount of Ether contributed
     function ethRaised() beforeDeadline returns (uint amountRaised) {
         return amountRaised;
     }
