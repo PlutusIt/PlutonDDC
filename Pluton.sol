@@ -1,3 +1,4 @@
+
 contract Pluton {
 
     mapping (address => uint256) balances;
@@ -64,10 +65,6 @@ contract Pluton {
         _spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData);
         Approval(msg.sender, _spender, _value);
         return true;
-    }
-
-    function getBalanceInEth(address addr) returns(uint){
-        return ConvertLib.convert(getBalance(addr),2);
     }
 
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
