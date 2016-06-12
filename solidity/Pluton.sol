@@ -11,7 +11,8 @@ contract Pluton {
 
     string public name;                   
     uint8 public decimals;                
-    string public symbol;      
+    string public symbol;                 
+    string public version = 'H0.1';       
 
     function Pluton(
         uint256 _initialAmount,
