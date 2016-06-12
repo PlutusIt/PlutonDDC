@@ -28,6 +28,10 @@ contract PlutonSale {
     	if (now > endTime) throw;
     		_ 
     }
+
+    function ethRaised() beforeDeadline returns (uint amountRaised) {
+        return amountRaised;
+    }
     
     // Determines if you get a bonus of 1%, 2%, 3%, or 0%
     function bonusPercent() beforeDeadline returns (uint bonus) {
