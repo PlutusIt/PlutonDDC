@@ -1,4 +1,4 @@
-contract HumanStandardToken {
+contract Pluton {
 
     mapping (address => uint256) balances;
     mapping (address => mapping (address => uint256)) allowed;
@@ -13,7 +13,7 @@ contract HumanStandardToken {
     string public symbol;                 
     string public version = 'H0.1';       
 
-    function HumanStandardToken(
+    function Pluton(
         uint256 _initialAmount,
         string _tokenName,
         uint8 _decimalUnits,
@@ -64,6 +64,10 @@ contract HumanStandardToken {
         _spender.call(bytes4(bytes32(sha3("receiveApproval(address,uint256,address,bytes)"))), msg.sender, _value, this, _extraData);
         Approval(msg.sender, _spender, _value);
         return true;
+    }
+
+    function getBalanceInEth(address addr) returns(uint){
+        return ConvertLib.convert(getBalance(addr),2);
     }
 
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
