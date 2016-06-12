@@ -48,9 +48,13 @@ contract PlutonSale {
     	uint amount = msg.value;
         users[users.length++] = User({contributor: tx.origin, amount: amount, bonusPercent: bonus});
         amountRaised += amount;
-        Contribution(tx.origin, amount, amountRaised);
+        contributionCall();
     }
 
+    function contributionCall() {
+        uint amount;
+        Contribution(tx.origin, amount, amountRaised);
+    }
 
     modifier onlyPlutus() {
     	if (msg.sender != plutusBoard) throw;
