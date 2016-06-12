@@ -25,17 +25,17 @@ contract PlutonSale {
     }
 
 
-    modifier afterDeadline() { 
+    modifier beforeDeadline() { 
     	if (now > endTime) throw;
     		_ 
     }
     
     // This is the default function called when Ether is sent to the contract
-    function () afterDeadline returns (bool success) {
+    function () beforeDeadline returns (bool success) {
     	uint bonusPeriod = 86400;
-    	uint dayOne = startTime + bonusPeriod;
-    	uint dayTwo = dayOne + bonusPeriod;
-    	uint dayThree = dayTwo + bonusPeriod;
+        uint dayOne = startTime + bonusPeriod;
+        uint dayTwo = dayOne + bonusPeriod;
+        uint dayThree = dayTwo + bonusPeriod;
         if (now <= dayOne) {
             bonus = 3;
         } else if (now <= dayTwo) {
@@ -43,7 +43,7 @@ contract PlutonSale {
         } else if (now <= dayThree) {
             bonus = 1;
         } else 
-        	bonus = 0;
+            bonus = 0;
 
     	uint amount = msg.value;
         users[users.length++] = User({contributor: tx.origin, amount: amount, bonusPercent: bonus});
@@ -56,12 +56,12 @@ contract PlutonSale {
         Contribution(tx.origin, amount, amountRaised);
     }
 
-    modifier beforeDeadline() { 
+    modifier afterDeadline() { 
     	if (now <= endTime) throw; 
     		_
     }
 
-    function saleProceeds() beforeDeadline returns (uint amountRaised) {
+    function saleProceeds() afterDeadline returns (uint amountRaised) {
         return amountRaised;
     }
 
@@ -71,7 +71,7 @@ contract PlutonSale {
     }
     
     // Sends sale proceeds to Plutus Board at the end of the sale
-    function sendEthToPlutusBoard() onlyPlutus beforeDeadline {
+    function sendEthToPlutusBoard() onlyPlutus afterDeadline {
         plutusBoard.send(this.balance);
     }
 }
