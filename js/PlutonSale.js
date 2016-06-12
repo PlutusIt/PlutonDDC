@@ -38,3 +38,13 @@ newEther.watch(function(err, result) {
 
 	/// append details of result.args to frontend UI
 })
+
+// returns total ETH in account
+web3.eth.watch({altered: web3.eth.coinbase}).changed(function(){
+  	web3.eth.coinbase.then(function(result) {
+  		document.getElementById('coinbase').innerText = result;
+  	});
+  	web3.eth.balanceAt(web3.eth.coinbase).then(function(result){
+    	document.getElementById('balance').innerText = result;
+    });
+});
